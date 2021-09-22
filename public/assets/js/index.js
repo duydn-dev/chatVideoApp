@@ -28,19 +28,21 @@ var app = new Vue({
             return loginData;
         },
         async handlerSocketIo() {
-            const myVideo = document.createElement('video');
-            myVideo.muted = true;
-
             const stream = await navigator.mediaDevices.getUserMedia({
                 video: true,
                 audio: true
             });
+            
+            const myVideo = document.createElement('video');
+            myVideo.muted = true;
 
             socket.emit('join-room', this.currentUser);
-            socket.on('clients', (data) =>{
+            socket.on('clients', (data) => {
                 this.client = data;
             })
+
             socket.on('user-connected', (data) => {
+                this.currentUser.socketId = data.socketId;
                 if ($(`#u_${data.userId}`).children().length > 0)
                     $(`#u_${data.userId}`).empty();
                 
@@ -51,12 +53,7 @@ var app = new Vue({
                     if(element.userId != this.currentUser.userId)
                         this.addVideoStream(otherUser, stream, element.userId);
                 });
-                
             })
-            // socket.on('user-leave-room', () =>{
-            //     const i = this.client.findIndex(n => n.userId === this.currentUser.userId);
-            //     this.client.splice(i, 1);
-            // })
         },
         addVideoStream(video, stream, userId){
             video.srcObject = stream;
@@ -72,6 +69,6 @@ var app = new Vue({
     },
     async created() {
         this.currentUser = (!localStorage.getItem('currentUser')) ? await this.openPopUser() : JSON.parse(localStorage.getItem('currentUser'));
-        this.handlerSocketIo();
+        await this.handlerSocketIo();
     },
 })
