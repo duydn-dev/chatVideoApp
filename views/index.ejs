@@ -14,6 +14,9 @@
             -webkit-transform: scaleX(-1);
             transform: scaleX(-1);
         }
+        .uk-offcanvas-bar{
+
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
     <script src="/assets/js/jquery-3.6.0.min.js"></script>
@@ -27,7 +30,6 @@
 
 <body>
     <div class="uk-container" id="app">
-        <div><button @click="clearCurrentData()">Logout</button></div>
         <div class="col-lg-12 uk-margin-small-top">
             <div class="row">
                 <div v-for="item in client" :key="item.userId" class="col-lg-4" :id="'d_' + item.userId">
@@ -36,8 +38,28 @@
                             <div :id="'u_' + item.userId" v-if="currentUser.isTurnOnCamera"></div>
                             <img src="" alt="" v-if="!currentUser.isTurnOnCamera">
                             <div class="uk-transition-slide-bottom uk-position-bottom uk-overlay uk-overlay-primary">
-                                <p>{{item.userName}}</p>
+                                <div class="text-center">
+                                    <p class="text-white">{{item.userName}}</p>
+                                    <button class="uk-button uk-button-default uk-margin-small-right" type="button" uk-toggle="target: #left-menu">Thao tác</button>
+                                </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="left-side">
+            <div id="left-menu" uk-offcanvas>
+                <div class="uk-offcanvas-bar">
+                    <button class="uk-offcanvas-close" type="button" uk-close></button>
+                    <h3>Thao tác</h3>
+
+                    <div class="uk-flex">
+                        <div>
+                            <button @click="clearCurrentData()" class="uk-button uk-button-default">Thoát</button>
+                        </div>
+                        <div>
+                            <button class="uk-button uk-button-default">Khung chat</button>
                         </div>
                     </div>
                 </div>

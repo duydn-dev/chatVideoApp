@@ -47,11 +47,13 @@ var app = new Vue({
                     $(`#u_${data.userId}`).empty();
                 
                 this.addVideoStream(myVideo, stream, this.currentUser.userId);
-                // add other user connect
+                console.log(this.client);
+                // // add other user connect
                 const otherUser = document.createElement('video');
                 this.client.forEach(element => {
-                    if(element.userId != this.currentUser.userId)
+                    if(element.userId != this.currentUser.userId){
                         this.addVideoStream(otherUser, stream, element.userId);
+                    }
                 });
             })
         },
@@ -65,6 +67,7 @@ var app = new Vue({
         },
         clearCurrentData() {
             localStorage.removeItem('currentUser');
+            location.reload();
         },
     },
     async created() {
