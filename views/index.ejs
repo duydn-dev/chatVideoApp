@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="/assets/css/uikit.min.css">
     <link rel="stylesheet" href="/fontawesome-free/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="/assets/css/style.css">
     <style>
         video {
             -webkit-transform: scaleX(-1);
@@ -21,6 +22,7 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
     <script src="/assets/js/jquery-3.6.0.min.js"></script>
     <script src="/assets/js/uikit.min.js"></script>
+    <script src="/assets/js/uikit-icons.min.js"></script>
     <script src="/socket.io/socket.io.js" defer></script>
     <script>
         const r_id = "<%= roomId %>";
@@ -55,11 +57,36 @@
                     <h3>Thao tác</h3>
 
                     <div class="uk-flex">
-                        <div>
-                            <button @click="clearCurrentData()" class="uk-button uk-button-default">Thoát</button>
+                        <div class="w-50">
+                            <button @click="clearCurrentData()" class="uk-button uk-button-default w-100" uk-tooltip="title: Tắt/Bật Video; pos: bottom">
+                                <i :class="'fas fa-video' + (currentUser.isTurnOnCamera ? '': '-slash')"></i>
+                            </button>
                         </div>
-                        <div>
-                            <button class="uk-button uk-button-default">Khung chat</button>
+                        <div class="w-50">
+                            <button class="uk-button uk-button-default w-100" uk-tooltip="title: Tắt/Bật Mic; pos: bottom">
+                                <i :class="'fas fa-microphone' + (currentUser.isTurnOnAudio ? '': '-slash')"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="message-section" id="message-section">
+                        <ul>
+                            <li v-for="item in messages" :key="item.userId" style="list-style-type: none;">
+                                <div :class="'uk-card uk-card' + (item.userId != currentUser.userId ? '-secondary': '-default me') + ' uk-light message-item'">
+                                    <p :class="'message-text' + (item.userId != currentUser.userId ? '': ' text-dark')">{{item.message}}</p>
+                                </div>
+                            </li>
+                        </ul>
+                        
+                        <!-- <div class="uk-card uk-card-default uk-light message-item me">
+                            <p class="message-text text-dark">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                        </div> -->
+
+                        <div class="message-input w-100">
+                            <div class="uk-inline w-100">
+                                <span class="uk-form-icon uk-form-icon-flip" uk-icon="icon: forward"></span>
+                                <input class="uk-input" type="text" @keyup.enter="onSendMessage" placeholder="Nhập tin nhắn..." v-model="inMess">
+                            </div>
                         </div>
                     </div>
                 </div>

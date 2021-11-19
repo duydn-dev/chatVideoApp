@@ -3,7 +3,9 @@ var app = new Vue({
     el: '#app',
     data: {
         currentUser: {},
-        client: []
+        client: [],
+        inMess: "",
+        messages: []
     },
     methods: {
         makeId(length) {
@@ -35,7 +37,8 @@ var app = new Vue({
             
             const myVideo = document.createElement('video');
             myVideo.muted = true;
-
+            
+            this.currentUser.roomId = r_id;
             socket.emit('join-room', this.currentUser);
             socket.on('clients', (data) => {
                 this.client = data;
@@ -47,7 +50,6 @@ var app = new Vue({
                     $(`#u_${data.userId}`).empty();
                 
                 this.addVideoStream(myVideo, stream, this.currentUser.userId);
-                console.log(this.client);
                 // // add other user connect
                 const otherUser = document.createElement('video');
                 this.client.forEach(element => {
@@ -55,6 +57,10 @@ var app = new Vue({
                         this.addVideoStream(otherUser, stream, element.userId);
                     }
                 });
+            })
+
+            socket.on('send-message-to-room', (data) => {
+                this.messages.push(data);
             })
         },
         addVideoStream(video, stream, userId){
@@ -69,6 +75,15 @@ var app = new Vue({
             localStorage.removeItem('currentUser');
             location.reload();
         },
+        onSendMessage(){
+            socket.emit('send-message', {
+                userId: this.currentUser.userId,
+                socketId: this.currentUser.socketId,
+                userName: this.currentUser.name,
+                message: this.inMess
+            });
+            this.inMess = '';
+        }
     },
     async created() {
         this.currentUser = (!localStorage.getItem('currentUser')) ? await this.openPopUser() : JSON.parse(localStorage.getItem('currentUser'));

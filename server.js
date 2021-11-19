@@ -3,6 +3,7 @@ const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
 
+const _ = require('lodash');
 const common = require('./common');
 
 app.set('view engine', 'ejs')
@@ -30,7 +31,6 @@ io.on("connection", (socket) => {
     let roomId = "";
     // server nhận sự kiện join room
     socket.on("join-room", (req) => {
-        //console.log(req.roomId)
         // check xem xem room đã tồn tại chưa, chưa có thì thêm, đã có thì update user vào đó
         const exitsRoom = clients.find(n => n.roomId && n.roomId === req.roomId);
         req.socketId = socketId;
@@ -55,12 +55,14 @@ io.on("connection", (socket) => {
         }
 
         const usersInRoom = clients.find(n => n.roomId === req.roomId);
-        console.log(clients);
         roomId = req.roomId;
         socket.join(roomId);
         io.in(roomId).emit('clients', usersInRoom.users);
         io.in(roomId).emit('user-connected', { userId: req.userId, socketId: socketId});
     });
+    socket.on('send-message', (data) => {
+        io.in(roomId).emit('send-message-to-room', data);
+    })
     socket.on('disconnect', () => {
         const room = clients.find(n => n.roomId == roomId);
         if(room){
