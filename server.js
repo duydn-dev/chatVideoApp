@@ -63,6 +63,18 @@ io.on("connection", (socket) => {
     socket.on('send-message', (data) => {
         io.in(roomId).emit('send-message-to-room', data);
     })
+    socket.on('toggle-camera', (data) => {
+        const userInRooms = _.find(clients, n => n.roomId === data.roomId);
+        const user = _.find(userInRooms.users, n => n.userId === data.userId);
+        user.isTurnOnCamera = !user.isTurnOnCamera;
+        io.in(roomId).emit('send-toggle-camera', user);
+    })
+    socket.on('toggle-audio', (data) => {
+        const userInRooms = _.find(clients, n => n.roomId === data.roomId);
+        const user = _.find(userInRooms.users, n => n.userId === data.userId);
+        user.isTurnOnAudio = !user.isTurnOnAudio;
+        io.in(roomId).emit('send-toggle-audio', user);
+    })
     socket.on('disconnect', () => {
         const room = clients.find(n => n.roomId == roomId);
         if(room){

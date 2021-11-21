@@ -59,9 +59,22 @@ var app = new Vue({
                 });
             })
 
+            // chat
             socket.on('send-message-to-room', (data) => {
                 this.messages.push(data);
             })
+
+            // tắt bật cam
+            socket.on('send-toggle-camera', (user) => {
+                const currVideo = this.client.find(n => n.userId == user.userId);
+                currVideo.isTurnOnCamera = user.isTurnOnCamera;
+            })
+
+            // tắt bật audio
+            socket.on('send-toggle-audio', (user) => {
+                console.log('user',user);
+            })
+            
         },
         addVideoStream(video, stream, userId){
             video.srcObject = stream;
@@ -79,10 +92,16 @@ var app = new Vue({
             socket.emit('send-message', {
                 userId: this.currentUser.userId,
                 socketId: this.currentUser.socketId,
-                userName: this.currentUser.name,
+                userName: this.currentUser.userName,
                 message: this.inMess
             });
             this.inMess = '';
+        },
+        onToggleCamera(){
+            socket.emit('toggle-camera', this.currentUser);
+        },
+        onToggleMicrophone(){
+            socket.emit('toggle-audio', this.currentUser);
         }
     },
     async created() {

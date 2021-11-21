@@ -21,9 +21,7 @@
 .message-item{
     border-radius: 10px;
     max-width: 90%;
-}
-.message-text{
-    padding: 7px;
+    padding: 10px;
 }
 .me{
     float: right;
@@ -34,4 +32,11 @@
     bottom: 0;
     left: 0;
     background-color: black;
+}
+.message-list{
+    padding-left: 0;
+    margin-top: 10px;
+}
+.video-main{
+    height: 295.5px;
 }

@@ -35,14 +35,18 @@
         <div class="col-lg-12 uk-margin-small-top">
             <div class="row">
                 <div v-for="item in client" :key="item.userId" class="col-lg-4" :id="'d_' + item.userId">
-                    <div class="uk-card uk-card-default uk-padding-small">
-                        <div class="uk-inline uk-inline-clip uk-transition-toggle">
-                            <div :id="'u_' + item.userId" v-if="currentUser.isTurnOnCamera"></div>
-                            <img src="" alt="" v-if="!currentUser.isTurnOnCamera">
+                    <div class="uk-card uk-card-default uk-padding-small video-main">
+                        <div class="uk-inline uk-inline-clip uk-transition-toggle w-100 h-100">
+                            <div :id="'u_' + item.userId" :class="item.isTurnOnCamera ? '': 'd-none'"></div>
+                            <div :class="!item.isTurnOnCamera ? '': 'd-none'">
+                                <div class="w-100 h-100 text-center d-flex">
+                                    <img src="/assets/imgs/no-user.png" alt="" width="50" height="50" style="align-items: center;">
+                                </div>
+                            </div>
                             <div class="uk-transition-slide-bottom uk-position-bottom uk-overlay uk-overlay-primary">
                                 <div class="text-center">
                                     <p class="text-white">{{item.userName}}</p>
-                                    <button class="uk-button uk-button-default uk-margin-small-right" type="button" uk-toggle="target: #left-menu">Thao tác</button>
+                                    <button v-if="item.userId == currentUser.userId" class="uk-button uk-button-default uk-margin-small-right" type="button" uk-toggle="target: #left-menu">Thao tác</button>
                                 </div>
                             </div>
                         </div>
@@ -50,6 +54,7 @@
                 </div>
             </div>
         </div>
+        <!-- side bar bên trái -->
         <div class="left-side">
             <div id="left-menu" uk-offcanvas>
                 <div class="uk-offcanvas-bar">
@@ -58,22 +63,24 @@
 
                     <div class="uk-flex">
                         <div class="w-50">
-                            <button @click="clearCurrentData()" class="uk-button uk-button-default w-100" uk-tooltip="title: Tắt/Bật Video; pos: bottom">
+                            <button @click="onToggleCamera()" class="uk-button uk-button-default w-100" uk-tooltip="title: Tắt/Bật Video; pos: bottom">
                                 <i :class="'fas fa-video' + (currentUser.isTurnOnCamera ? '': '-slash')"></i>
                             </button>
                         </div>
                         <div class="w-50">
-                            <button class="uk-button uk-button-default w-100" uk-tooltip="title: Tắt/Bật Mic; pos: bottom">
+                            <button @click="onToggleMicrophone()" class="uk-button uk-button-default w-100" uk-tooltip="title: Tắt/Bật Mic; pos: bottom">
                                 <i :class="'fas fa-microphone' + (currentUser.isTurnOnAudio ? '': '-slash')"></i>
                             </button>
                         </div>
                     </div>
                     <hr>
                     <div class="message-section" id="message-section">
-                        <ul>
+                        <ul class="message-list">
                             <li v-for="item in messages" :key="item.userId" style="list-style-type: none;">
-                                <div :class="'uk-card uk-card' + (item.userId != currentUser.userId ? '-secondary': '-default me') + ' uk-light message-item'">
-                                    <p :class="'message-text' + (item.userId != currentUser.userId ? '': ' text-dark')">{{item.message}}</p>
+                                <div class="w-100 d-block clearfix pb-1 pt-2">
+                                    <span :class="'uk-card uk-card' + (item.userId != currentUser.userId ? '-secondary': '-default me') + ' uk-light message-item'">
+                                        <label :class="'message-text' + (item.userId != currentUser.userId ? '': ' text-dark')"> <b><u>{{item.userName}}:</u></b>&#160;{{item.message}}</label>
+                                    </span>
                                 </div>
                             </li>
                         </ul>
