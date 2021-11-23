@@ -68,11 +68,18 @@ var app = new Vue({
             socket.on('send-toggle-camera', (user) => {
                 const currVideo = this.client.find(n => n.userId == user.userId);
                 currVideo.isTurnOnCamera = user.isTurnOnCamera;
+                if(user.userId == this.currentUser.userId){
+                    this.currentUser.isTurnOnCamera = user.isTurnOnCamera;
+                }
             })
 
             // tắt bật audio
             socket.on('send-toggle-audio', (user) => {
-                console.log('user',user);
+                console.log(user);
+                $(`#u_${user.userId} video`).prop('muted', !user.isTurnOnAudio);
+                if(user.userId == this.currentUser.userId){
+                    this.currentUser.isTurnOnAudio = user.isTurnOnAudio;
+                }
             })
             
         },
