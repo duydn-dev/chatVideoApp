@@ -70,19 +70,25 @@ io.on("connection", (socket) => {
         io.in(roomId).emit('send-toggle-camera', user);
     })
     socket.on('toggle-audio', (data) => {
-        const userInRooms = _.find(clients, n => n.roomId === data.roomId);
+        let userInRooms = _.find(clients, n => n.roomId === data.roomId);
+        if(!userInRooms) userInRooms = {};
         const user = _.find(userInRooms.users, n => n.userId === data.userId);
         user.isTurnOnAudio = !user.isTurnOnAudio;
         io.in(roomId).emit('send-toggle-audio', user);
     })
+    socket.on('toggle-share-screen', (data) => {
+        io.in(roomId).emit('send-toggle-share-screen', data);
+    })
     socket.on('disconnect', () => {
-        const room = clients.find(n => n.roomId == roomId);
+        let room = clients.find(n => n.roomId == roomId);
         if(room){
-            const i = room?.users.findIndex(n => n.socketId === socketId);
+            const i = room.users.findIndex(n => n.socketId === socketId);
             if(i !== -1)
-                room?.users.splice(i, 1);
+                room.users.splice(i, 1);
         }
-        io.in(roomId).emit('clients', room?.users ? room.users: []);
+        else
+            room = {};
+        io.in(roomId).emit('clients', room.users ? room.users: []);
     })
 });
 

@@ -1,3 +1,16 @@
+video {
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+}
+.wrapper{
+    display: grid;
+    gap: 10px;
+    grid-auto-rows: 100px;
+}
+/* .button-wrapper{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+} */
 .message-section{
     background-color: #fff;
     height: 450px;
@@ -37,6 +50,22 @@
     padding-left: 0;
     margin-top: 10px;
 }
-.video-main{
-    height: 295.5px;
+.uk-overlay{
+    padding: 10px 5px;
+}
+/* .uk-button{
+    padding: 0px 20px;
+} */
+.uk-button i {
+    font-size: 13px;
+}
+.h-141px{
+    height: 133.27px;
+}
+.off-mic{
+    z-index: 1000;
+}
+.off-mic{
+    padding: 20px;
+    font-size: 17px;
 }

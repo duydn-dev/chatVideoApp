@@ -75,13 +75,22 @@ var app = new Vue({
 
             // tắt bật audio
             socket.on('send-toggle-audio', (user) => {
-                console.log(user);
+                const currVideo = this.client.find(n => n.userId == user.userId);
+                currVideo.isTurnOnAudio = user.isTurnOnAudio;
                 $(`#u_${user.userId} video`).prop('muted', !user.isTurnOnAudio);
                 if(user.userId == this.currentUser.userId){
                     this.currentUser.isTurnOnAudio = user.isTurnOnAudio;
                 }
             })
-            
+            socket.on('send-toggle-share-screen', async (data) => {
+                if(data.userId == this.currentUser.userId){
+                    let captureStream = await navigator.mediaDevices.getDisplayMedia({
+                        video: true,
+                        audio: false
+                    });
+                    console.log(captureStream);
+                }
+            })
         },
         addVideoStream(video, stream, userId){
             video.srcObject = stream;
@@ -109,6 +118,9 @@ var app = new Vue({
         },
         onToggleMicrophone(){
             socket.emit('toggle-audio', this.currentUser);
+        },
+        onToggleShareScreen(){
+            socket.emit('toggle-share-screen', this.currentUser);
         }
     },
     async created() {
