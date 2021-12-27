@@ -16,6 +16,7 @@
     <script src="/assets/js/uikit.min.js"></script>
     <script src="/assets/js/uikit-icons.min.js"></script>
     <script src="/socket.io/socket.io.js" defer></script>
+    <script src="/assets/js/socket.io-stream.js" defer></script>
     <script>
         const r_id = "<%= roomId %>";
     </script>
@@ -24,10 +25,10 @@
 
 <body>
     <div id="app">
-        <div style="padding: 0 2%;">
-            <div class="col-lg-12 uk-margin-small-top">
+        <div style="padding: 0 2%;" :class="(isShareScreen ? 'row': '')">
+            <div :class="'col-lg-' + (isShareScreen ? '2': '12')  +' uk-margin-small-top'">
                 <div class="row">
-                    <div v-for="item in client" :key="item.userId" class="col-lg-2" :id="'d_' + item.userId">
+                    <div v-for="item in client" :key="item.userId" :class="'col-lg-' + (isShareScreen  ? '12': '2')" :id="'d_' + item.userId">
                         <div class="uk-card uk-card-default uk-padding-small video-main position-relative">
                             <div v-if="!item.isTurnOnAudio" class="position-absolute top-0 end-0 off-mic">
                                 <i class="fas fa-microphone-slash"></i>
@@ -61,7 +62,7 @@
                                                 uk-tooltip="title: Trò truyện; pos: bottom">
                                                 <i class="far fa-comment-dots"></i>
                                             </button>
-                                            <button class="uk-button-default w-100" @click="onToggleShareScreen()"
+                                            <button class="uk-button-default w-100" @click="shareScreen()"
                                                 uk-tooltip="title: Chia sẻ màn hình; pos: bottom">
                                                 <i class="fas fa-desktop"></i>
                                             </button>
@@ -73,10 +74,10 @@
                     </div>
                 </div>
             </div>
+            <div class="col-lg-10" id="screen-section" v-if="isShareScreen">
+                <video class="w-100 h-100" id="video-share" playsinline autoplay style="border: 1px solid #e5e5e5;"></video>
+            </div>
         </div>
-        <!-- <div class="col-lg-9">
-
-        </div> -->
         <!-- side bar bên trái -->
         <div class="left-side">
             <div id="left-menu" uk-offcanvas>

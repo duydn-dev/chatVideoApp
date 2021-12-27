@@ -2,7 +2,6 @@ const express = require('express');
 const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
-
 const _ = require('lodash');
 const common = require('./common');
 
@@ -17,13 +16,6 @@ app.get("/", async (req, res) => {
 app.get("/:roomId", async (req, res) => {
     return res.render("index.ejs", { roomId: `${req.params.roomId}` });
 })
-
-// const client = [
-//     {
-//         roomId: 'a',
-//         users: []
-//     }
-// ]
 
 let clients = [];
 io.on("connection", (socket) => {
@@ -76,9 +68,25 @@ io.on("connection", (socket) => {
         user.isTurnOnAudio = !user.isTurnOnAudio;
         io.in(roomId).emit('send-toggle-audio', user);
     })
-    socket.on('toggle-share-screen', (data) => {
-        io.in(roomId).emit('send-toggle-share-screen', data);
-    })
+    // share màn hình
+    socket.on("broadcaster", () => {
+        socket.broadcast.emit("broadcaster");
+    });
+    socket.on("watcher", (roomId) => {
+        console.log('watcher');
+        socket.to(roomId).emit("watcher", socket.id);
+    });
+    socket.on("offer", (id, message) => {
+        socket.to(id).emit("offer", socket.id, message);
+    });
+    socket.on("answer", (id, message) => {
+        socket.to(id).emit("answer", socket.id, message);
+    });
+    socket.on("candidate", (id, message, userId) => {
+        socket.to(id).emit("candidate", socket.id, message, userId);
+    });
+
+    // end share màn hình
     socket.on('disconnect', () => {
         let room = clients.find(n => n.roomId == roomId);
         if(room){
@@ -92,4 +100,6 @@ io.on("connection", (socket) => {
     })
 });
 
-server.listen(3000);
+server.listen(3000, () => {
+    console.log('app running in 3000 port');
+});

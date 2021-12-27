@@ -1,4 +1,4 @@
-video {
+video, #video-share {
     -webkit-transform: scaleX(-1);
     transform: scaleX(-1);
 }
